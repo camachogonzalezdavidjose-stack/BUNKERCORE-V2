@@ -1,28 +1,16 @@
 require('dotenv').config();
 const express = require('express');
-const helmet = require('helmet');
-const authController = require('./controllers/authController');
-const webauthnController = require('./controllers/webauthnController');
+const cors = require('cors');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
-
-// 1. Security: Helmet protects against common web vulnerabilities
-app.use(helmet());
-
-// 2. Parsers
+app.use(cors());
 app.use(express.json());
 
-// Auth Routes
-app.post('/api/auth/register', authController.register);
-app.post('/api/auth/verify', authController.verify);
+// LA CLAVE: Aquí es donde montamos las rutas con el prefijo /api
+app.use('/api', authRoutes);
 
-// WebAuthn Routes
-app.post('/api/webauthn/register-options', webauthnController.generateOptions);
-app.post('/api/webauthn/verify-registration', webauthnController.verifyRegistration);
-app.post('/api/webauthn/auth-options', webauthnController.generateAuthOptions);
-app.post('/api/webauthn/verify-auth', webauthnController.verifyAuthentication);
-
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 app.listen(PORT, () => {
-    console.log(`BunkerCore-V2 server running on port ${PORT}`);
+    console.log('Servidor corriendo en http://localhost:' + PORT);
 });

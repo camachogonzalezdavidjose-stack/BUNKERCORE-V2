@@ -1,0 +1,10 @@
+BunkerCore-V2 includes software developed by third parties:
+
+- @simplewebauthn/server: MIT License
+- express: MIT License
+- dotenv: BSD 2-Clause License
+- pg (node-postgres): MIT License
+
+These open-source components are used in accordance with their respective 
+license terms. All other code within this repository is the exclusive 
+property of the BunkerCore-V2 author.

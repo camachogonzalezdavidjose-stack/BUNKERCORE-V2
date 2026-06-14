@@ -1,26 +1,29 @@
+require('dotenv').config();
 const crypto = require('crypto');
 
-const ALGORITHM = 'aes-256-gcm';
-const KEY = Buffer.from(process.env.ENCRYPTION_KEY, 'hex');
+const secretKey = process.env.SECRET_KEY;
+if (!secretKey) throw new Error("FATAL: SECRET_KEY is not defined.");
 
-const CryptoService = {
-    encrypt(text) {
-        const iv = crypto.randomBytes(12);
-        const cipher = crypto.createCipheriv(ALGORITHM, KEY, iv);
+// Create a 32-byte key from the secret
+const key = crypto.createHash('sha256').update(secretKey).digest();
+
+const cryptoService = {
+    encrypt: (text) => {
+        const iv = crypto.randomBytes(16);
+        const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
         let encrypted = cipher.update(text, 'utf8', 'hex');
         encrypted += cipher.final('hex');
-        const authTag = cipher.getAuthTag().toString('hex');
-        return `${iv.toString('hex')}:${authTag}:${encrypted}`;
+        return iv.toString('hex') + ':' + encrypted;
     },
-
-    decrypt(encryptedText) {
-        const [iv, authTag, encrypted] = encryptedText.split(':');
-        const decipher = crypto.createDecipheriv(ALGORITHM, KEY, Buffer.from(iv, 'hex'));
-        decipher.setAuthTag(Buffer.from(authTag, 'hex'));
-        let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+    decrypt: (text) => {
+        const parts = text.split(':');
+        const iv = Buffer.from(parts.shift(), 'hex');
+        const encryptedText = Buffer.from(parts.join(':'), 'hex');
+        const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
+        let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
         decrypted += decipher.final('utf8');
         return decrypted;
     }
 };
 
-module.exports = CryptoService;
+module.exports = cryptoService;
