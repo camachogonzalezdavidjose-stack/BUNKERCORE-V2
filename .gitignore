@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+npm-debug.log
+
+# Secrets and Configuration (Total Lockdown)
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.crt
+
+# Databases and Logs
+*.db
+*.sqlite
+*.log
+*.log.*
+npm-debug.log*
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Termux/OS Folders
+.trash/
+.cache/
