@@ -24,3 +24,8 @@ Thumbs.db
 # Termux/OS Folders
 .trash/
 .cache/
+*.tar.gz
+google-cloud-sdk/
+bunkercore-cloudflare/
+bunkercore-dep/
+gentle-shadow-*/
