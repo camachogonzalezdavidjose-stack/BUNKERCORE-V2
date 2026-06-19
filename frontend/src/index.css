@@ -1,0 +1,33 @@
+/* Forzado de fondo y texto global para BUNKERCORE-V2 */
+:root {
+  font-family: 'Courier New', Courier, monospace, system-ui, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  /* Colores base: Fondo Negro/Azul cyber y texto claro */
+  color-scheme: dark;
+  color: #e2e8f0;
+  background-color: #030712; /* Gris/Negro profundo ultra-seguro */
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: initial;
+  min-width: 320px;
+  min-h: 100vh;
+  background-color: #030712; /* Forzado doble */
+}
+
+/* Si usas Tailwind, esto asegura el fondo del contenedor principal */
+#root {
+  min-height: 100vh;
+  background-color: #030712;
+  width: 100%;
+}
+
+/* Ajuste fino para que las tarjetas de estatus resalten en azul/gris oscuro */
+.card, [class*="bg-white"] {
+  background-color: #1f2937 !important; /* Forzar a gris oscuro */
+  color: #f3f4f6 !important;
+}

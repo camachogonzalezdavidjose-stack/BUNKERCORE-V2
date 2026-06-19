@@ -1,0 +1,8 @@
+{
+  "name": "Remix: Bunkercore",
+  "description": "Plataforma universal de identidad y operaciones multi-tenant bajo un modelo Zero-Trust.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

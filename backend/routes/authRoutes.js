@@ -1,15 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const { 
-    generateOptions, 
-    verifyRegistration, 
-    generateAuthOptions, 
-    verifyAuthentication 
-} = require('../controllers/webauthnController');
+const webauthnController = require('../controllers/webauthnController');
 
-router.post('/webauthn/register-options', generateOptions);
-router.post('/webauthn/verify-registration', verifyRegistration);
-router.post('/webauthn/auth-options', generateAuthOptions);
-router.post('/webauthn/verify-auth', verifyAuthentication);
+// Rutas para Registro
+router.post('/webauthn/register/generate', webauthnController.generateRegistrationOptions);
+router.post('/webauthn/register/verify', webauthnController.verifyRegistration);
+
+// Rutas para Autenticación
+router.post('/webauthn/auth/generate', webauthnController.generateAuthenticationOptions);
+router.post('/webauthn/auth/verify', webauthnController.verifyAuthentication);
 
 module.exports = router;

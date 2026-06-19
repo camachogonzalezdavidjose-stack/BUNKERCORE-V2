@@ -1,0 +1,33 @@
+{
+  // Existing firebase configuration ...
+  "database": {
+    "rules": "database.rules.json"
+  },
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "storage": {
+    "rules": "storage.rules"
+  },
+
+  // ...
+
+  // Optional emulator configuration. Default
+  // values are used if absent.
+  "emulators": {
+    "singleProjectMode": false, // do not warn on detection of multiple project IDs
+    "firestore": {
+      "port": "8080"
+    },
+    "ui": {
+      "enabled": true,      // Default is `true`
+      "port": 4005          // If unspecified, see CLI log for selected port
+    },
+    "auth": {
+      "port": "9099"
+    },
+    "pubsub": {
+      "port": "8085"
+    }
+  }
+}

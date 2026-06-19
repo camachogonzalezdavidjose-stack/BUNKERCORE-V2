@@ -1,0 +1,28 @@
+:root {
+  font-family: 'Courier New', Courier, monospace, system-ui, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: dark;
+  color: #e2e8f0;
+  background-color: #030712;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: initial;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #030712;
+}
+
+#root {
+  min-height: 100vh;
+  background-color: #030712;
+  width: 100%;
+}
+
+.card, [class*="bg-white"] {
+  background-color: #1f2937 !important;
+  color: #f3f4f6 !important;
+}

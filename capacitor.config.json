@@ -1,0 +1,5 @@
+{
+  "appId": "com.bunkercore.app",
+  "appName": "BUNKERCORE-V2",
+  "webDir": "frontend/dist"
+}

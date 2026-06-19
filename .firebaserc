@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "bunker": "bunkercore-3d504",
+    "default": "bunkercore-3d504"
+  },
+  "targets": {},
+  "etags": {}
+}

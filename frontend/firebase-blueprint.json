@@ -1,0 +1,102 @@
+{
+  "entities": {
+    "Tenant": {
+      "title": "Tenant",
+      "description": "Enterprise tenant database partition details",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "code": { "type": "string" },
+        "dbSchema": { "type": "string" },
+        "apiEndpoint": { "type": "string" },
+        "color": { "type": "string" }
+      },
+      "required": ["id", "name", "code", "dbSchema", "apiEndpoint", "color"]
+    },
+    "InventoryItem": {
+      "title": "InventoryItem",
+      "description": "Stock of high-value industrial item under tenancy",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier of the item" },
+        "sku": { "type": "string", "description": "Stock Keeping Unit code pattern" },
+        "name": { "type": "string", "description": "Readable item title" },
+        "category": { "type": "string", "description": "Industrial item grouping" },
+        "stock": { "type": "number", "description": "Current physical count" },
+        "price": { "type": "number", "description": "Unity cost in USD" },
+        "unit": { "type": "string", "description": "Standard unit of measurement" },
+        "minStock": { "type": "number", "description": "Trigger threshold for restocking" }
+      },
+      "required": ["id", "sku", "name", "category", "stock", "price", "unit", "minStock"]
+    },
+    "MermaLog": {
+      "title": "MermaLog",
+      "description": "Audit record of lost, broken, or discounted stock",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "itemId": { "type": "string" },
+        "itemName": { "type": "string" },
+        "qty": { "type": "number" },
+        "reason": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "loggedBy": { "type": "string" }
+      },
+      "required": ["id", "itemId", "itemName", "qty", "reason", "timestamp", "loggedBy"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Chronological system security trail log",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "action": { "type": "string" },
+        "details": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "user": { "type": "string" },
+        "role": { "type": "string" },
+        "severity": { "type": "string", "enum": ["info", "warning", "critical"] }
+      },
+      "required": ["id", "action", "details", "timestamp", "tenantId", "user", "role", "severity"]
+    },
+    "ArchitectureBlueprint": {
+      "title": "ArchitectureBlueprint",
+      "description": "Interactive zero-trust architectural blueprint card",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "technicalSummary": { "type": "string" },
+        "uploadedBy": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["id", "title", "description", "imageUrl", "technicalSummary", "uploadedBy", "timestamp"]
+    }
+  },
+  "firestore": {
+    "tenants/{tenantId}": {
+      "schema": "Tenant",
+      "description": "Dynamic organization details"
+    },
+    "tenants/{tenantId}/inventories/{itemId}": {
+      "schema": "InventoryItem",
+      "description": "Inventory items belonging to specific tenant partition"
+    },
+    "tenants/{tenantId}/mermas/{mermaId}": {
+      "schema": "MermaLog",
+      "description": "Shrinkages registered under tenant partition"
+    },
+    "auditLogs/{logId}": {
+      "schema": "AuditLog",
+      "description": "Inmutable security and infrastructure operations logs"
+    },
+    "architectureBlueprints/{bpId}": {
+      "schema": "ArchitectureBlueprint",
+      "description": "Interactive architectural zero-trust diagrams catalog"
+    }
+  }
+}

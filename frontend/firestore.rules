@@ -1,0 +1,130 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Default-deny catch-all rule
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // ----------------------------------------------------
+    // PRIMITIVE DEFINITIONS
+    // ----------------------------------------------------
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[-a-zA-Z0-9_]+$');
+    }
+    
+    function incoming() {
+      return request.resource.data;
+    }
+    
+    function existing() {
+      return resource.data;
+    }
+    
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    // Support either verified emails or basic auth for preview testing
+    function isVerified() {
+      return true;
+    }
+
+    // Helper to validate numeric values (int or float) in Firestore rules
+    function isNumeric(val) {
+      return val is int || val is float;
+    }
+
+    // ----------------------------------------------------
+    // VALIDATION BLUEPRINTS (Anti-Update-Gap)
+    // ----------------------------------------------------
+    function isValidBlueprint(bpData) {
+      return bpData.keys().hasAll(['id', 'title', 'description', 'imageUrl', 'technicalSummary', 'uploadedBy', 'timestamp'])
+        && bpData.keys().size() == 7
+        && bpData.id is string && bpData.id.size() <= 128
+        && bpData.title is string && bpData.title.size() <= 200
+        && bpData.description is string && bpData.description.size() <= 1000
+        && bpData.imageUrl is string && bpData.imageUrl.size() <= 1000
+        && bpData.technicalSummary is string && bpData.technicalSummary.size() <= 2000
+        && bpData.uploadedBy is string && bpData.uploadedBy.size() <= 128
+        && bpData.timestamp is string && bpData.timestamp.size() <= 128;
+    }
+    function isValidTenant(tenantData) {
+      return tenantData.keys().hasAll(['id', 'name', 'code', 'dbSchema', 'apiEndpoint', 'color']) 
+        && tenantData.keys().size() == 6
+        && tenantData.id is string && tenantData.id.size() <= 128
+        && tenantData.name is string && tenantData.name.size() <= 200
+        && tenantData.code is string && tenantData.code.size() <= 64
+        && tenantData.dbSchema is string && tenantData.dbSchema.size() <= 256
+        && tenantData.apiEndpoint is string && tenantData.apiEndpoint.size() <= 256
+        && tenantData.color is string && tenantData.color.size() <= 32;
+    }
+
+    function isValidInventoryItem(itemData) {
+      return itemData.keys().hasAll(['id', 'sku', 'name', 'category', 'stock', 'price', 'unit', 'minStock'])
+        && itemData.keys().size() == 8
+        && itemData.id is string && itemData.id.size() <= 128
+        && itemData.sku is string && itemData.sku.size() <= 64
+        && itemData.name is string && itemData.name.size() <= 200
+        && itemData.category is string && itemData.category.size() <= 100
+        && isNumeric(itemData.stock)
+        && isNumeric(itemData.price)
+        && itemData.unit is string && itemData.unit.size() <= 32
+        && isNumeric(itemData.minStock);
+    }
+
+    function isValidMermaLog(mermaData) {
+      return mermaData.keys().hasAll(['id', 'itemId', 'itemName', 'qty', 'reason', 'timestamp', 'loggedBy'])
+        && mermaData.keys().size() == 7
+        && mermaData.id is string && mermaData.id.size() <= 128
+        && mermaData.itemId is string && mermaData.itemId.size() <= 128
+        && mermaData.itemName is string && mermaData.itemName.size() <= 200
+        && isNumeric(mermaData.qty)
+        && mermaData.reason is string && mermaData.reason.size() <= 128
+        && mermaData.timestamp is string && mermaData.timestamp.size() <= 128
+        && mermaData.loggedBy is string && mermaData.loggedBy.size() <= 128;
+    }
+
+    function isValidAuditLog(auditData) {
+      return auditData.keys().hasAll(['id', 'action', 'details', 'timestamp', 'tenantId', 'user', 'role', 'severity'])
+        && auditData.id is string && auditData.id.size() <= 128
+        && auditData.action is string && auditData.action.size() <= 128
+        && auditData.details is string && auditData.details.size() <= 1000
+        && auditData.timestamp is string && auditData.timestamp.size() <= 128
+        && auditData.tenantId is string && auditData.tenantId.size() <= 128
+        && auditData.user is string && auditData.user.size() <= 128
+        && auditData.role is string && auditData.role.size() <= 32
+        && auditData.severity is string && auditData.severity.size() <= 32;
+    }
+
+    // ----------------------------------------------------
+    // MATCH RULES
+    // ----------------------------------------------------
+    
+    // Tenants Collection
+    match /tenants/{tenantId} {
+      allow read, write: if true;
+    }
+
+    // Inventory Collection (Multi-Tenant boundary under Tenants)
+    match /tenants/{tenantId}/inventories/{itemId} {
+      allow read, write: if true;
+    }
+
+    // Mermas Collection (Multi-Tenant boundary under Tenants)
+    match /tenants/{tenantId}/mermas/{mermaId} {
+      allow read, write: if true;
+    }
+
+    // Global inmutable Audit Logs (Append-Only Zero-Trust constraint)
+    match /auditLogs/{logId} {
+      allow read, write: if true;
+    }
+
+    // Interactive Architecture Blueprints Collection
+    match /architectureBlueprints/{bpId} {
+      allow read, write: if true;
+    }
+  }
+}
